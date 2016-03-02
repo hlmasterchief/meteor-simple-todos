@@ -4,13 +4,17 @@ Meteor.methods({
     if (! Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
+
+    var task = {
+      text: text
+    }
+
+    task = TaskSchema.clean(task);
+    task.createdAt = new Date();
+    task.owner = Meteor.userId();
+    task.username = Meteor.user().username;
  
-    Tasks.insert({
-      text: text,
-      createdAt: new Date(),
-      owner: Meteor.userId(),
-      username: Meteor.user().username
-    });
+    Tasks.insert(task);
   },
 
   deleteTask: function (taskId) {
